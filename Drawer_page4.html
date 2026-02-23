@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>서랍 (tarot-user-app)</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Song+Myung&display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0; padding: 0; overflow: hidden;
+            background-color: #0d0d1a;
+            font-family: 'Noto Sans KR', sans-serif;
+            cursor: pointer;
+        }
+        .slide-container {
+            width: 100vw; height: 100vh;
+            position: relative;
+            background-color: #0d0d1a;
+            display: flex; flex-direction: column;
+            color: #ffffff; box-sizing: border-box;
+            padding: 5vh 5vw;
+        }
+
+        /* Background Elements */
+        .bg-circle {
+            position: absolute; border-radius: 50%; border: 1px solid rgba(123, 47, 190, 0.1);
+            z-index: 0; pointer-events: none;
+        }
+        .circle-1 { top: -10vh; right: -5vw; width: 40vw; height: 40vw; border-color: rgba(123, 47, 190, 0.15); }
+        .circle-2 { bottom: -15vh; left: -5vw; width: 30vw; height: 30vw; border-color: rgba(212, 175, 55, 0.1); }
+
+        /* Header */
+        .header {
+            margin-bottom: 2rem; border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 10;
+        }
+        .title { font-family: 'Song Myung', serif; font-size: 2.5rem; color: #d4af37; margin: 0; }
+        .app-badge {
+            background-color: rgba(123, 47, 190, 0.2); border: 1px solid #7b2fbe;
+            color: #d8b4fe; padding: 6px 16px; border-radius: 20px; font-size: 0.9rem;
+        }
+
+        /* Content Layout */
+        .content-wrapper { display: flex; flex: 1; gap: 5vw; z-index: 10; align-items: center; }
+
+        /* Left Visual (Phone Mockup) */
+        .visual-area { flex: 0 0 320px; position: relative; }
+        .phone-frame {
+            width: 280px; height: 560px; border: 4px solid #334155; border-radius: 36px;
+            background-color: #0f172a; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        .phone-screen { width: 100%; height: 100%; background-color: #1e1e2e; display: flex; flex-direction: column; }
+        .app-header-ui { height: 50px; background-color: #2a2a3e; display: flex; align-items: center; padding: 0 20px; }
+        
+        .card-stack { position: relative; height: 260px; width: 100%; margin-top: 30px; display: flex; justify-content: center; }
+        .tarot-card-ui {
+            width: 160px; height: 240px; background-color: #2d2d44; border: 1px solid #7b2fbe;
+            border-radius: 12px; position: absolute; display: flex; justify-content: center; align-items: center;
+        }
+        .card-1 { transform: rotate(-10deg) translateX(-20px); z-index: 1; opacity: 0.6; }
+        .card-2 { transform: rotate(5deg) translateX(10px); z-index: 2; border-color: #d4af37; }
+
+        .nav-bar-ui { height: 60px; background-color: #2a2a3e; margin-top: auto; display: flex; justify-content: space-around; align-items: center; color: #64748b; }
+
+        /* Right Content (Text) */
+        .text-area { flex: 1; display: flex; flex-direction: column; }
+        .feature-item {
+            display: flex; margin-bottom: 1.5vh; background-color: rgba(255, 255, 255, 0.03);
+            padding: 18px; border-radius: 12px; border-left: 4px solid #7b2fbe; transition: 0.2s;
+        }
+        .feature-item:hover { transform: translateX(10px); background-color: rgba(123, 47, 190, 0.1); }
+        .feature-icon { flex: 0 0 50px; font-size: 1.5rem; color: #d4af37; }
+        .feature-content h3 { margin: 0 0 4px 0; color: #e2e8f0; font-size: 1.1rem; font-weight: 600; }
+        .feature-content p { margin: 0; color: #94a3b8; font-size: 0.9rem; line-height: 1.4; }
+
+        .status-box { margin-top: auto; display: flex; gap: 15px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .status-item { font-size: 0.85rem; color: #cbd5e1; background-color: rgba(13, 115, 119, 0.15); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(13, 115, 119, 0.3); }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .floating { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+<div class="slide-container">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+
+    <div class="header">
+        <h1 class="title">서랍 (tarot-user-app)</h1>
+        <span class="app-badge">CORE APP</span>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="visual-area floating">
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="app-header-ui"><div style="width: 60px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px;"></div></div>
+                    <div style="padding: 20px;">
+                        <p style="color: #d4af37; font-size: 1.1rem; font-family: 'Song Myung', serif; margin: 0;">나의 서랍</p>
+                        <p style="color: #64748b; font-size: 0.7rem;">기록된 타로 이야기</p>
+                    </div>
+                    <div class="card-stack">
+                        <div class="tarot-card-ui card-1"><i class="fa-solid fa-moon text-2xl text-slate-700"></i></div>
+                        <div class="tarot-card-ui card-2">
+                            <div class="text-center">
+                                <i class="fa-solid fa-star text-3xl text-yellow-500 opacity-80 mb-2"></i>
+                                <p style="font-size: 0.7rem; color: #d4af37; font-family: 'Song Myung', serif;">THE STAR</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-bar-ui">
+                        <i class="fa-solid fa-house" style="color: #7b2fbe;"></i>
+                        <i class="fa-solid fa-book-open"></i>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-area">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-box-archive"></i></div>
+                <div class="feature-content">
+                    <h3>서랍 (기록 공간) 획득</h3>
+                    <p>QR 방문 체크인 시 자동으로 생성되는 나만의 타로 기록 공간 제공</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-scroll"></i></div>
+                <div class="feature-content">
+                    <h3>타로 상담 기록 관리</h3>
+                    <p>개인 타로 상담 내용을 날짜별로 저장하고 언제든 다시 열람 가능</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-check-to-slot"></i></div>
+                <div class="feature-content">
+                    <h3>공지사항 & 투표</h3>
+                    <p>매장의 새로운 소식을 확인하고, 진행 중인 투표에 참여하여 의견 반영</p>
+                </div>
+            </div>
+            <div class="feature-item" style="border-left-color: #0d7377;">
+                <div class="feature-icon"><i class="fa-solid fa-robot" style="color: #0d7377;"></i></div>
+                <div class="feature-content">
+                    <h3>[확장 예정] AI 데일리 운세</h3>
+                    <p>매일 확인하는 운세 기능 추가 검토 중 (대회용 기능 확장)</p>
+                </div>
+            </div>
+
+            <div class="status-box">
+                <div class="status-item"><i class="fa-brands fa-android mr-2 text-green-400"></i>Android App</div>
+                <div class="status-item" style="border-color: #7b2fbe;"><i class="fa-solid fa-flask mr-2 text-purple-400"></i>알파 테스트 중</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.body.addEventListener('click', () => {
+        window.location.href = 'Drawer_page5.html'; // 마지막 페이지로
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            window.location.href = 'Drawer_page5.html';
+        } else if (e.key === 'ArrowLeft') {
+            window.location.href = 'Drawer_page3.html'; // 이전 아키텍처 페이지로
+        }
+    });
+</script>
+</body>
+</html>

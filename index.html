@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/black.min.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>발표 시작 (표지)</h1>
+                <p>오른쪽 방향키(→)를 눌러주세요</p>
+                <a href="page1.html">클릭해서 이동도 가능</a>
+            </section>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize();
+        // 키보드 오른쪽 방향키 누르면 이동
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') window.location.href = 'Drawer_page1.html';
+        });
+    </script>
+</body>
+</html>
