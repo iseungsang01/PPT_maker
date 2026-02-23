@@ -1,169 +1,389 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>QR App (tarot-qr-app)</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Song+Myung&display=swap" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>tarot-developer-app</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Song+Myung&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
     <style>
         body {
-            margin: 0; padding: 0; overflow: hidden;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
             background-color: #0d0d1a;
             font-family: 'Noto Sans KR', sans-serif;
             cursor: pointer;
         }
+
         .slide-container {
-            width: 100vw; height: 100vh;
+            width: 100vw;
+            height: 100vh;
             position: relative;
             background-color: #0d0d1a;
-            display: flex; flex-direction: column;
-            color: #ffffff; box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+            box-sizing: border-box;
             padding: 5vh 5vw;
         }
 
-        /* Background Elements */
+        /* Background Elements - QR 앱과 통일 */
         .bg-circle {
-            position: absolute; border-radius: 50%; border: 1px solid rgba(123, 47, 190, 0.1);
-            z-index: 0; pointer-events: none;
+            position: absolute;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
         }
-        .circle-1 { top: -10vh; right: -5vw; width: 40vw; height: 40vw; border-color: rgba(13, 115, 119, 0.1); }
-        .circle-2 { bottom: -15vh; left: -5vw; width: 30vw; height: 30vw; border-color: rgba(212, 175, 55, 0.05); }
 
-        /* Header */
-        .header {
-            margin-bottom: 2rem; border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 10;
+        .circle-1 {
+            top: -10vh;
+            right: -5vw;
+            width: 40vw;
+            height: 40vw;
+            border: 1px solid rgba(13, 115, 119, 0.1);
         }
-        .title { font-family: 'Song Myung', serif; font-size: 2.5rem; color: #d4af37; margin: 0; }
+
+        .circle-2 {
+            bottom: -15vh;
+            left: -5vw;
+            width: 30vw;
+            height: 30vw;
+            border: 1px solid rgba(168, 85, 247, 0.05);
+        }
+
+        /* Header - 디자인 통일 */
+        .header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .title {
+            font-family: 'Song Myung', serif;
+            font-size: 2.5rem;
+            color: #d4af37;
+            margin: 0;
+        }
+
         .app-badge {
-            background-color: rgba(13, 115, 119, 0.2); border: 1px solid #0d7377;
-            color: #4fd1c5; padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 500;
+            background-color: rgba(168, 85, 247, 0.15);
+            border: 1px solid #a855f7;
+            color: #d8b4fe;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         /* Content Layout */
-        .content-wrapper { display: flex; flex: 1; gap: 5vw; z-index: 10; align-items: center; }
-
-        /* Left Visual (QR Scanner) */
-        .visual-area { flex: 0 0 350px; position: relative; }
-        .qr-frame {
-            width: 300px; height: 540px; border-radius: 24px; background-color: #1a1a2e;
-            position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid #2a2a3e;
-            overflow: hidden; display: flex; flex-direction: column; align-items: center;
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            gap: 5vw;
+            z-index: 10;
+            align-items: center;
         }
-        .qr-header { width: 100%; height: 50px; background-color: #0d7377; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        .qr-camera-view { width: 100%; height: 280px; background-color: #000; position: relative; display: flex; justify-content: center; align-items: center; }
-        .qr-overlay { width: 180px; height: 180px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; position: relative; }
-        
-        .qr-scan-line {
-            width: 100%; height: 2px; background-color: #0d7377; box-shadow: 0 0 10px #0d7377;
-            position: absolute; animation: scan 2s linear infinite;
+
+        /* Left Visual (Phone Frame - 사진 기반 재현) */
+        .visual-area {
+            flex: 0 0 350px;
+            position: relative;
         }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        .qr-result-card { width: 90%; margin-top: 20px; background-color: #2a2a3e; border-radius: 10px; padding: 12px; border-left: 4px solid #d4af37; }
+        .phone-frame {
+            width: 300px;
+            height: 580px;
+            border-radius: 32px;
+            background-color: #050505;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 2px solid #1e1e2e;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* Right Content (Text) */
-        .text-area { flex: 1; display: flex; flex-direction: column; }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .mock-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .mock-subtitle {
+            color: #a855f7;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .mock-refresh {
+            width: 32px;
+            height: 32px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a855f7;
+        }
+
+        .mock-card {
+            background: #121212;
+            border: 1px solid #222;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .mock-tag {
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .tag-blue {
+            color: #38bdf8;
+            border: 1px solid #0369a1;
+        }
+
+        .tag-orange {
+            color: #fbbf24;
+            border: 1px solid #92400e;
+        }
+
+        .mock-card h4 {
+            color: #fff;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .mock-card p {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 4px 0 12px 0;
+        }
+
+        .mock-reply {
+            color: #a855f7;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-weight: bold;
+        }
+
+        /* Right Content (Text) - QR 앱과 스타일 통일 */
+        .text-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         .feature-item {
-            display: flex; margin-bottom: 1.5vh; background-color: rgba(255, 255, 255, 0.03);
-            padding: 18px; border-radius: 12px; border-left: 4px solid #0d7377; transition: 0.2s;
+            display: flex;
+            margin-bottom: 1.5vh;
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 4px solid #a855f7;
+            transition: 0.2s;
         }
-        .feature-item:hover { transform: translateX(10px); background-color: rgba(13, 115, 119, 0.1); }
-        .feature-icon { flex: 0 0 45px; font-size: 1.3rem; color: #0d7377; }
-        .feature-content h3 { margin: 0 0 4px 0; color: #e2e8f0; font-size: 1.1rem; font-weight: 600; }
-        .feature-content p { margin: 0; color: #94a3b8; font-size: 0.9rem; line-height: 1.4; }
 
-        .status-box { margin-top: auto; display: flex; align-items: center; gap: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-        .link-text { color: #4fd1c5; font-size: 0.85rem; margin-left: auto; }
+        .feature-item:hover {
+            transform: translateX(10px);
+            background-color: rgba(168, 85, 247, 0.08);
+        }
+
+        .feature-icon {
+            flex: 0 0 45px;
+            font-size: 1.3rem;
+            color: #a855f7;
+        }
+
+        .feature-content h3 {
+            margin: 0 0 4px 0;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .feature-content p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* 하단 강조 아이템 (QR 앱의 골드 포인트 계승) */
+        .feature-item-highlight {
+            border-left-color: #d4af37;
+        }
+
+        .feature-item-highlight .feature-icon {
+            color: #d4af37;
+        }
+
+        .status-box {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-tag {
+            px-3 py-1 bg-slate-800 rounded border border-slate-700 text-xs;
+        }
+
+        .link-text {
+            color: #a855f7;
+            font-size: 0.85rem;
+            margin-left: auto;
+            font-weight: 500;
+        }
     </style>
 </head>
+
 <body>
-<div class="slide-container">
-    <div class="bg-circle circle-1"></div>
-    <div class="bg-circle circle-2"></div>
+    <div class="slide-container">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
 
-    <div class="header">
-        <h1 class="title">tarot-qr-app</h1>
-        <span class="app-badge">ADMIN TOOL</span>
-    </div>
+        <div class="header">
+            <h1 class="title">tarot-developer-app</h1>
+            <span class="app-badge">OPERATIONAL TOOL</span>
+        </div>
 
-    <div class="content-wrapper">
-        <div class="visual-area">
-            <div class="qr-frame">
-                <div class="qr-header"><i class="fa-solid fa-qrcode mr-2"></i>방문 체크인</div>
-                <div class="qr-camera-view">
-                    <div class="qr-overlay">
-                        <div class="qr-scan-line"></div>
-                        <div style="position:absolute; top:-2px; left:-2px; width:20px; height:20px; border-top:4px solid #0d7377; border-left:4px solid #0d7377;"></div>
-                        <div style="position:absolute; top:-2px; right:-2px; width:20px; height:20px; border-top:4px solid #0d7377; border-right:4px solid #0d7377;"></div>
-                        <div style="position:absolute; bottom:-2px; left:-2px; width:20px; height:20px; border-bottom:4px solid #0d7377; border-left:4px solid #0d7377;"></div>
-                        <div style="position:absolute; bottom:-2px; right:-2px; width:20px; height:20px; border-bottom:4px solid #0d7377; border-right:4px solid #0d7377;"></div>
+        <div class="content-wrapper">
+            <div class="visual-area">
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="mock-header">
+                            <div>
+                                <h2 class="mock-title">Developer<br>Console</h2>
+                                <div class="mock-subtitle">BUG REPORTS MONITOR</div>
+                            </div>
+                            <div class="mock-refresh"><i class="fa-solid fa-rotate-right"></i></div>
+                        </div>
+
+                        <div class="mock-card">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="mock-tag tag-blue">확인중</div>
+                                <span style="font-size:0.6rem; color:#444;">2026. 02. 18</span>
+                            </div>
+                            <h4>a</h4>
+                            <p>b</p>
+                            <div class="flex items-center mb-2">
+                                <span
+                                    class="bg-green-900 bg-opacity-20 text-green-500 text-[9px] px-2 py-0.5 rounded flex items-center">
+                                    <i class="fa-solid fa-check mr-1"></i> 답변 완료
+                                </span>
+                            </div>
+                            <div class="mock-reply">답변하기 <i class="fa-solid fa-chevron-right ml-1"></i></div>
+                        </div>
+
+                        <div class="mock-card">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="mock-tag tag-orange">접수</div>
+                                <span style="font-size:0.6rem; color:#444;">2026. 02. 18</span>
+                            </div>
+                            <h4>new</h4>
+                            <p>mew2</p>
+                            <div class="mock-reply">답변하기 <i class="fa-solid fa-chevron-right ml-1"></i></div>
+                        </div>
                     </div>
                 </div>
-                <div class="qr-result-card">
-                    <p style="color:#d4af37; font-size:0.8rem; font-weight:bold; margin:0 0 5px 0;"><i class="fa-solid fa-check-circle mr-1"></i> 스캔 완료</p>
-                    <p style="color:#cbd5e1; font-size:0.7rem; margin:0;">고객 ID: user_2910<br>방문 시각: 2026-02-19 19:30</p>
-                </div>
-                <div style="margin-top:auto; padding:15px; width:100%;"><div style="background:rgba(255,255,255,0.05); border-radius:8px; padding:8px; text-align:center; font-size:0.7rem; color:#94a3b8;">카메라 활성화 중...</div></div>
-            </div>
-            <i class="fa-solid fa-camera absolute" style="right:-10px; top:50px; font-size:2.5rem; color:#0d7377; opacity:0.5;"></i>
-        </div>
-
-        <div class="text-area">
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-camera-rotate"></i></div>
-                <div class="feature-content">
-                    <h3>QR 방문 체크인 & 자동 기록</h3>
-                    <p>현장에서 고객 QR을 스캔하여 DB에 실시간 방문 데이터를 저장합니다.</p>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-link"></i></div>
-                <div class="feature-content">
-                    <h3>서랍(기록 공간) 즉시 연동</h3>
-                    <p>스캔과 동시에 고객의 개인 앱에 해당 방문 '서랍'이 자동 생성됩니다.</p>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <div class="feature-content">
-                    <h3>유연한 기록 모드 지원</h3>
-                    <p>타로 상담 혹은 일반 식사 등 방문 목적에 따른 데이터 분리 기록이 가능합니다.</p>
-                </div>
-            </div>
-            <div class="feature-item" style="border-left-color: #d4af37;">
-                <div class="feature-icon"><i class="fa-solid fa-database" style="color:#d4af37;"></i></div>
-                <div class="feature-content">
-                    <h3>실시간 비즈니스 인사이트</h3>
-                    <p>관리자는 현장 방문 현황을 즉시 파악하고 서비스 응대에 활용합니다.</p>
-                </div>
+                <i class="fa-solid fa-terminal absolute"
+                    style="right:-10px; top:50px; font-size:2.5rem; color:#a855f7; opacity:0.3;"></i>
             </div>
 
-            <div class="status-box">
-                <div class="flex gap-2">
-                    <div class="px-3 py-1 bg-slate-800 rounded border border-slate-700 text-xs">Web App</div>
-                    <div class="px-3 py-1 bg-teal-900 bg-opacity-30 rounded border border-teal-700 text-xs text-teal-200">배포 완료</div>
+            <div class="text-area">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-bug"></i></div>
+                    <div class="feature-content">
+                        <h3>실시간 버그 리포트 관리</h3>
+                        <p>사용자가 인앱에서 제출한 오류 및 개선사항을 실시간으로 수집하고 단계를 관리합니다.</p>
+                    </div>
                 </div>
-                <div class="link-text"><i class="fa-solid fa-link mr-1"></i> qr-check-tawny.vercel.app</div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-comment-medical"></i></div>
+                    <div class="feature-content">
+                        <h3>현장 즉시 대응 시스템</h3>
+                        <p>이슈 확인 즉시 모바일에서 사용자에게 답변을 전송하여 운영 신뢰도를 높입니다.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                    <div class="feature-content">
+                        <h3>인프라 원격 모니터링</h3>
+                        <p>서버 상태와 DB 부하를 실시간 스캔하여 이슈 발생 시 즉각적인 푸시 알림을 수신합니다.</p>
+                    </div>
+                </div>
+                <div class="feature-item feature-item-highlight">
+                    <div class="feature-icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="feature-content">
+                        <h3>관리자 전용 보안 액세스</h3>
+                        <p>인가된 개발자 계정만 접근 가능하며, 모든 시스템 변경 이력은 로그로 기록됩니다.</p>
+                    </div>
+                </div>
+
+                <div class="status-box">
+                    <div class="flex gap-2">
+                        <div class="px-3 py-1 bg-slate-800 rounded border border-slate-700 text-xs text-slate-300">
+                            Android App</div>
+                        <div
+                            class="px-3 py-1 bg-purple-900 bg-opacity-30 rounded border border-purple-700 text-xs text-purple-200">
+                            내부 배포 중</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.body.addEventListener('click', () => {
-        window.location.href = 'Drawer_page7.html'; // 기술 스택 등 다음 페이지로
-    });
+    <script>
+        document.body.addEventListener('click', () => {
+            window.location.href = 'Drawer_page8.html';
+        });
 
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === ' ') {
-            window.location.href = 'Drawer_page7.html';
-        } else if (e.key === 'ArrowLeft') {
-            window.location.href = 'Drawer_page5.html'; // 관리자 앱 페이지로
-        }
-    });
-</script>
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                window.location.href = 'Drawer_page8.html';
+            } else if (e.key === 'ArrowLeft') {
+                window.location.href = 'Drawer_page6.html';
+            }
+        });
+    </script>
 </body>
+
 </html>
